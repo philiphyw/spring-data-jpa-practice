@@ -8,8 +8,13 @@ import org.hibernate.generator.Generator;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
-@Entity(name="student")
-@Table(name="student")
+@Entity(name="Student")
+@Table(
+        name="student",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "student_email_unique",columnNames = "email")
+        }
+)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,8 +47,7 @@ public class Student {
     private String lastName;
     @Column(
             nullable = false,
-            name = "email",
-            unique = true
+            name = "email"
     )
     private String email;
     private Integer age;
