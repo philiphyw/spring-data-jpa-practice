@@ -42,6 +42,12 @@ public class SpringDataJpaPracticeApplication {
 
 			studentRepository.saveAll(students);
 			System.out.println("sample data is generated");
+
+
+//			Test JPQL in Student Repository
+			studentRepository.findActiveStudentOverAge(30)
+					.stream()
+					.forEach(student -> System.out.println("findActiveStudentOverAge: " + student));
 		};
 	}
 
