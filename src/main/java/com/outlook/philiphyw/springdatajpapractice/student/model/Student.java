@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.generator.Generator;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
@@ -18,6 +19,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public class Student {
     @Id
     @SequenceGenerator(
