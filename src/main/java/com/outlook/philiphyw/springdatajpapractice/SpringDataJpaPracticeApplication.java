@@ -45,10 +45,28 @@ public class SpringDataJpaPracticeApplication {
 
 
 //			Test JPQL in Student Repository
-			studentRepository.findActiveStudentOverAge(30)
+//			studentRepository.findActiveStudentOverAge(30)
+//					.stream()
+//					.forEach(student -> System.out.println("findActiveStudentOverAge: " + student));
+
+			System.out.println("findStudentBetweenAge(18,80) before deletion");
+
+			studentRepository.findStudentBetweenAge(18,80)
 					.stream()
-					.forEach(student -> System.out.println("findActiveStudentOverAge: " + student));
+					.forEach(student -> System.out.println("findStudentBetweenAge: " + student));
+
+
+			System.out.println("About to deleteStudentByAgeLessThan(60)");
+			studentRepository.deleteStudentByAgeLessThan(60);
+
+			System.out.println("findStudentBetweenAge(18,80) after deletion");
+
+			studentRepository.findStudentBetweenAge(18,80)
+					.stream()
+					.forEach(student -> System.out.println("findStudentBetweenAge: " + student));
+
 		};
+
 	}
 
 }
