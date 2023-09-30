@@ -1,21 +1,24 @@
 package com.outlook.philiphyw.springdatajpapractice;
 
 import com.github.javafaker.Faker;
+import com.outlook.philiphyw.springdatajpapractice.book.model.Book;
+import com.outlook.philiphyw.springdatajpapractice.book.repository.BookRepository;
 import com.outlook.philiphyw.springdatajpapractice.student.model.Student;
 import com.outlook.philiphyw.springdatajpapractice.student.repository.StudentRepository;
 import com.outlook.philiphyw.springdatajpapractice.studentcard.model.StudentCard;
 import com.outlook.philiphyw.springdatajpapractice.studentcard.repository.StudentCardRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 
 @SpringBootApplication
 public class SpringDataJpaPracticeApplication {
@@ -30,7 +33,7 @@ public class SpringDataJpaPracticeApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(StudentRepository studentRepository, StudentCardRepository studentCardRepository,Faker faker){
+	CommandLineRunner commandLineRunner(StudentRepository studentRepository, StudentCardRepository studentCardRepository,Faker faker,BookRepository bookRepository){
 		return args -> {
 
 //			List<Student> students = IntStream
@@ -58,7 +61,6 @@ public class SpringDataJpaPracticeApplication {
 								.age(faker.number().numberBetween(18,80))
 								.isActive(faker.bool().bool())
 								.build();
-
 						return new StudentCard(
 								null,
 								UUID.randomUUID().toString().substring(0,15),
@@ -68,29 +70,19 @@ public class SpringDataJpaPracticeApplication {
 
 			studentCardRepository.saveAll(studentCards);
 
-			studentRepository.deleteById(2L);
+			Optional<Student> student = studentRepository.findById(1L);
 
-			studentCardRepository.deleteById(20L);
+			student.ifPresent(
+					s -> createBookSampleData(s,bookRepository)
+			);
 
-//			Student student = students.get(0);
+//			studentRepository.deleteById(2L);
 //
-//			StudentCard studentCard = new StudentCard(
-//							null,
-//							"alksdfja12",
-//							student
-//							);
-//			studentCardRepository.save(studentCard);
+//			studentCardRepository.deleteById(20L);
 
 
-//			List<StudentCard> studentCards = IntStream
-//					.rangeClosed(1,20)
-//					.mapToObj(i -> new StudentCard(
-//							null,
-//							faker.idNumber().toString(),
-//							students.get(i-1)
-//							)
-//					).collect(Collectors.toList());
-//			studentCardRepository.saveAll(studentCards);
+
+
 
 			System.out.println("sample data is generated");
 
@@ -120,4 +112,15 @@ public class SpringDataJpaPracticeApplication {
 
 	}
 
+	private void createBookSampleData(Student student, BookRepository bookRepository) {
+		List<Book> bookList = IntStream
+				.rangeClosed(1,5)
+				.mapToObj(i ->
+					Book.builder()
+							.student(student)
+							.title(UUID.randomUUID().toString().substring(0,20))
+							.build()
+				).collect(Collectors.toList());
+		bookRepository.saveAll(bookList);
+	}
 }
