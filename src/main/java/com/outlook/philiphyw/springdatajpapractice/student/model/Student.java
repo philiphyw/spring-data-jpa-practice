@@ -1,12 +1,16 @@
 package com.outlook.philiphyw.springdatajpapractice.student.model;
 
 import com.outlook.philiphyw.springdatajpapractice.studentcard.model.StudentCard;
+import com.outlook.philiphyw.springdatajpapractice.book.model.Book;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.generator.Generator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.SEQUENCE;
 
@@ -62,4 +66,25 @@ public class Student {
             mappedBy = "student"
     )
     private StudentCard studentCard;
+
+    @OneToMany(
+            mappedBy = "student",
+            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST,CascadeType.REMOVE}
+    )
+    private List<Book> books = new ArrayList<Book>();
+
+    public void addBook(Book book) {
+        if(!this.books.contains(book)){
+            this.books.add(book);
+            book.setStudent(this);
+        }
+    }
+
+    public void removeBook(Book book) {
+        if(this.books.contains(book)){
+            this.books.remove(book);
+            book.setStudent(null);
+        }
+    }
 }
