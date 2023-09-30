@@ -1,5 +1,6 @@
 package com.outlook.philiphyw.springdatajpapractice.student.model;
 
+import com.outlook.philiphyw.springdatajpapractice.studentcard.model.StudentCard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -56,9 +57,9 @@ public class Student {
 
     private Boolean isActive;
 
-
-
-
-
-
+    @OneToOne(
+            orphanRemoval = true,
+            mappedBy = "student"
+    )
+    private StudentCard studentCard;
 }
