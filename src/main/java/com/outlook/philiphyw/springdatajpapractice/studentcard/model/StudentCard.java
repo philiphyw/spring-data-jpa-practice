@@ -40,4 +40,9 @@ public class StudentCard {
             referencedColumnName="id",
             foreignKey = @ForeignKey(name = "student_card_student_fk"))
     private Student student;
+
+    public StudentCard(String cardNumber, Student student) {
+        this.cardNumber=cardNumber;
+        this.student=student;
+    }
 }

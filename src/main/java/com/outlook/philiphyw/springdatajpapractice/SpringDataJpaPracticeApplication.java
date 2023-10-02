@@ -13,6 +13,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,26 @@ public class SpringDataJpaPracticeApplication {
 	@Bean
 	CommandLineRunner commandLineRunner(StudentRepository studentRepository, StudentCardRepository studentCardRepository,Faker faker,BookRepository bookRepository){
 		return args -> {
+			List<Student> students = IntStream
+					.rangeClosed(1,20)
+					.mapToObj(i -> {
+						Student student = Student
+								.builder()
+								.firstName(faker.name().firstName())
+								.lastName(faker.name().lastName())
+								.email(faker.internet().emailAddress())
+								.age(faker.number().numberBetween(18,80))
+								.isActive(faker.bool().bool())
+								.books(new ArrayList<Book>())
+								.build();
+						student.setStudentCard(new StudentCard(
+								UUID.randomUUID().toString().substring(0,15),
+								student
+						));
+						return student;
+					}).collect(Collectors.toList());
+
+				studentRepository.saveAll(students);
 
 //			List<Student> students = IntStream
 //					.rangeClosed(1,20)
@@ -50,28 +71,29 @@ public class SpringDataJpaPracticeApplication {
 //
 //			studentRepository.saveAll(students);
 
-			List<StudentCard> studentCards = IntStream
-					.rangeClosed(1,20)
-					.mapToObj(i -> {
-						Student student = Student
-								.builder()
-								.firstName(faker.name().firstName())
-								.lastName(faker.name().lastName())
-								.email(faker.internet().emailAddress())
-								.age(faker.number().numberBetween(18,80))
-								.isActive(faker.bool().bool())
-								.build();
-						return new StudentCard(
-								null,
-								UUID.randomUUID().toString().substring(0,15),
-								student
-						);
-					}).collect(Collectors.toList());
-
-			studentCardRepository.saveAll(studentCards);
+//			List<StudentCard> studentCards = IntStream
+//					.rangeClosed(1,20)
+//					.mapToObj(i -> {
+//						Student student = Student
+//								.builder()
+//								.firstName(faker.name().firstName())
+//								.lastName(faker.name().lastName())
+//								.email(faker.internet().emailAddress())
+//								.age(faker.number().numberBetween(18,80))
+//								.isActive(faker.bool().bool())
+//								.books(new ArrayList<Book>())
+//								.build();
+//						return new StudentCard(
+//								null,
+//								UUID.randomUUID().toString().substring(0,15),
+//								student
+//						);
+//					}).collect(Collectors.toList());
+//
+//			studentCardRepository.saveAll(studentCards);
 
 			Optional<Student> student = studentRepository.findById(1L);
-
+//
 			student.ifPresent(
 					s -> createBookSampleData(s,bookRepository)
 			);

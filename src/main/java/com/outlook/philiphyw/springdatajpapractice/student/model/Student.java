@@ -1,5 +1,6 @@
 package com.outlook.philiphyw.springdatajpapractice.student.model;
 
+import com.outlook.philiphyw.springdatajpapractice.course.model.Course;
 import com.outlook.philiphyw.springdatajpapractice.studentcard.model.StudentCard;
 import com.outlook.philiphyw.springdatajpapractice.book.model.Book;
 import jakarta.persistence.*;
@@ -63,7 +64,8 @@ public class Student {
 
     @OneToOne(
             orphanRemoval = true,
-            mappedBy = "student"
+            mappedBy = "student",
+            cascade = CascadeType.ALL
     )
     private StudentCard studentCard;
 
@@ -72,7 +74,28 @@ public class Student {
             orphanRemoval = true,
             cascade = {CascadeType.PERSIST,CascadeType.REMOVE}
     )
-    private List<Book> books = new ArrayList<Book>();
+    private List<Book> books ;
+
+    @ManyToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinTable(
+            name = "enrollment",
+            joinColumns=@JoinColumn(
+                    name = "student_id",
+                    foreignKey=@ForeignKey(
+                            name="enrollment_student_id_fk"
+                    )
+
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "course_id",
+                    foreignKey=@ForeignKey(
+                            name="enrollment_course_id_fk"
+                    )
+            )
+    )
+    private List<Course>courses;
 
     public void addBook(Book book) {
         if(!this.books.contains(book)){
